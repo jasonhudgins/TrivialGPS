@@ -16,6 +16,12 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Point;
 
+/**
+* Sample Application to demonstrate how to use some of the
+* android Location API's
+* 
+* Author: Jason Hudgins <jasonlee@spy.net>
+*/
 public class TrivialGPS extends MapActivity {
 	
 	public static final String UPDATE_LOC = "com.test.TrivialGPS.LOC_UPDATE";
