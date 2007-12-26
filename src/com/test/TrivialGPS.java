@@ -29,30 +29,31 @@ public class TrivialGPS extends MapActivity {
 	private LocationManager locationManager;
 	
     /** Called when the activity is first created. */
-    @Override
-    public void onCreate(Bundle icicle) {
-        super.onCreate(icicle);
-        
-        // create a map view
-        mapView = new MapView(this);
-        mapController = mapView.getController();
-        mapController.zoomTo(22);
+	@Override
+	public void onCreate(Bundle icicle) {
+	   super.onCreate(icicle);
 
-        // get a hangle on the location manager
-		locationManager = 
-			(LocationManager) getSystemService(Context.LOCATION_SERVICE);
+	   // create a map view
+	   mapView = new MapView(this);
+	   mapController = mapView.getController();
+	   mapController.zoomTo(22);
+	   setContentView(mapView);
 
-		// get the "gps" mock provider
-    	LocationProvider provider = getProviderByName("gps");
-		
-		// listen for updates
-		Intent intent = new Intent(UPDATE_LOC);
-		locationManager.requestUpdates(provider, 0, 0, intent);
-                
-        // register our IntentReceiver to recieve notifications about location updates.
-        registerReceiver(new handleLocationUpdate(), new IntentFilter(UPDATE_LOC));
-        setContentView(mapView);
-    }
+	   // get a hangle on the location manager
+	   locationManager =
+	     (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+	   // get the "gps" mock provider
+	   LocationProvider provider = getProviderByName("gps");
+
+	   // register our IntentReceiver as an observer.
+	   registerReceiver(new handleLocationUpdate(), new IntentFilter(UPDATE_LOC));
+
+	   // instruct the location manager to broad cast the UPDATE_LOC intent
+	   // continually as we move.
+	   Intent intent = new Intent(UPDATE_LOC);
+	   locationManager.requestUpdates(provider, 0, 0, intent);
+	}
     
     // utility method that returns a named location provider
     private LocationProvider getProviderByName(String name) {
