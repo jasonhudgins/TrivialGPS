@@ -28,6 +28,7 @@ public class TrivialGPS extends MapActivity {
 	
 	private MapController mapController;
 	private MapView mapView;
+	private LocationManager locationManager;
 	
     /** Called when the activity is first created. */
     @Override
@@ -40,7 +41,7 @@ public class TrivialGPS extends MapActivity {
         mapController.zoomTo(22);
 
         // get a hangle on the location manager
-		LocationManager locationManager = 
+		locationManager = 
 			(LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
 		// get the "gps" mock provider
@@ -58,20 +59,13 @@ public class TrivialGPS extends MapActivity {
     // utility method that returns a named location provider
     private LocationProvider getProviderByName(String name) {
     	
-        // get a hangle on the location manager
-		LocationManager locationManager = 
-			(LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		
-		List<LocationProvider> providers = locationManager.getProviders();
-    	
     	LocationProvider provider = null;
-    	for (LocationProvider p : providers) {
+    	for (LocationProvider p : locationManager.getProviders()) {
     		if (p.getName().equalsIgnoreCase(name)) {
     			provider = p;
     		}
     	}
     	
-    	assert provider != null : "Provider " + name + " does not exist";
     	return provider;
     }
     
@@ -81,8 +75,6 @@ public class TrivialGPS extends MapActivity {
     public class handleLocationUpdate extends IntentReceiver {
     	public void onReceiveIntent(Context context, Intent intent) {
     		Location loc = (Location) intent.getExtra("location");
-        	android.util.Log.i("TrivialGPS", "now at lat: " + loc.getLatitude() + 
-        			" lng: " + loc.getLongitude());
         	
         	Double lat = loc.getLatitude()*1E6;
         	Double lng = loc.getLongitude()*1E6;
