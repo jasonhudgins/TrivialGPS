@@ -38,14 +38,7 @@ public class TrivialGPS extends MapActivity {
         mapView = new MapView(this);
         mapController = mapView.getController();
         mapController.zoomTo(22);
-        
-        // register our IntentReceiver to recieve notifications about location updates.
-        registerReceiver(new handleLocationUpdate(), new IntentFilter(UPDATE_LOC));
-        doGPS();
-        setContentView(mapView);
-    }
-    
-    private void doGPS() {
+
         // get a hangle on the location manager
 		LocationManager locationManager = 
 			(LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -56,8 +49,12 @@ public class TrivialGPS extends MapActivity {
 		// listen for updates
 		Intent intent = new Intent(UPDATE_LOC);
 		locationManager.requestUpdates(provider, 0, 0, intent);
+                
+        // register our IntentReceiver to recieve notifications about location updates.
+        registerReceiver(new handleLocationUpdate(), new IntentFilter(UPDATE_LOC));
+        setContentView(mapView);
     }
-
+    
     // utility method that returns a named location provider
     private LocationProvider getProviderByName(String name) {
     	
