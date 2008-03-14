@@ -1,4 +1,4 @@
-package com.test;
+package com.droidworks.examples.trivialgps;
 
 import android.content.Context;
 import android.content.Intent;
@@ -18,7 +18,7 @@ import com.google.android.maps.Point;
 * Sample Application to demonstrate how to use some of the
 * android Location API's
 * 
-* Author: Jason Hudgins <jasonlee@spy.net>
+* Author: Jason Hudgins <jason@droidworks.com>
 */
 public class TrivialGPS extends MapActivity {
 	
@@ -44,7 +44,7 @@ public class TrivialGPS extends MapActivity {
 	     (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
 	   // get the "gps" mock provider
-	   LocationProvider provider = getProviderByName("gps");
+	   LocationProvider provider = locationManager.getProvider("gps");
 
 	   // register our IntentReceiver as an observer.
 	   registerReceiver(new handleLocationUpdate(), new IntentFilter(UPDATE_LOC));
@@ -54,25 +54,14 @@ public class TrivialGPS extends MapActivity {
 	   Intent intent = new Intent(UPDATE_LOC);
 	   locationManager.requestUpdates(provider, 0, 0, intent);
 	}
-    
-    // utility method that returns a named location provider
-    private LocationProvider getProviderByName(String name) {
-    	
-    	LocationProvider provider = null;
-    	for (LocationProvider p : locationManager.getProviders()) {
-    		if (p.getName().equalsIgnoreCase(name)) {
-    			provider = p;
-    		}
-    	}
-    	
-    	return provider;
-    }
-    
+        
     // this inner class is the intent reciever that recives notifcations
     // from the location provider about position updates, and then redraws
     // the MapView with the new location centered.
     public class handleLocationUpdate extends IntentReceiver {
     	public void onReceiveIntent(Context context, Intent intent) {
+    		// getExtra is deprecated, but I currently see no alternative.
+    		@SuppressWarnings("deprecation")
     		Location loc = (Location) intent.getExtra("location");
         	
         	Double lat = loc.getLatitude()*1E6;
