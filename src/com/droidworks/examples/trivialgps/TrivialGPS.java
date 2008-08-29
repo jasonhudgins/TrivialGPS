@@ -1,18 +1,16 @@
 package com.droidworks.examples.trivialgps;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.IntentReceiver;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.os.Bundle;
 
+import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
-import com.google.android.maps.Point;
+
 
 /**
 * Sample Application to demonstrate how to use some of the
@@ -23,6 +21,7 @@ import com.google.android.maps.Point;
 public class TrivialGPS extends MapActivity {
 	
 	public static final String UPDATE_LOC = "com.test.TrivialGPS.LOC_UPDATE";
+	private static final String MAP_API_KEY = "foo";
 	
 	private MapController mapController;
 	private MapView mapView;
@@ -34,42 +33,47 @@ public class TrivialGPS extends MapActivity {
 	   super.onCreate(icicle);
 
 	   // create a map view
-	   mapView = new MapView(this);
+	   mapView = new MapView(this, MAP_API_KEY);
 	   mapController = mapView.getController();
-	   mapController.zoomTo(22);
+	   mapController.setZoom(22);
 	   setContentView(mapView);
 
 	   // get a hangle on the location manager
 	   locationManager =
 	     (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-	   // get the "gps" mock provider
-	   LocationProvider provider = locationManager.getProvider("gps");
-
-	   // register our IntentReceiver as an observer.
-	   registerReceiver(new handleLocationUpdate(), new IntentFilter(UPDATE_LOC));
-
-	   // instruct the location manager to broad cast the UPDATE_LOC intent
-	   // continually as we move.
-	   Intent intent = new Intent(UPDATE_LOC);
-	   locationManager.requestUpdates(provider, 0, 0, intent);
+	   locationManager.requestLocationUpdates("gps", 0, 0, 
+			   new LocationUpdateHandler());
 	}
         
     // this inner class is the intent reciever that recives notifcations
     // from the location provider about position updates, and then redraws
     // the MapView with the new location centered.
-    public class handleLocationUpdate extends IntentReceiver {
-    	public void onReceiveIntent(Context context, Intent intent) {
-    		// getExtra is deprecated, but I currently see no alternative.
-    		@SuppressWarnings("deprecation")
-    		Location loc = (Location) intent.getExtra("location");
-        	
+    public class LocationUpdateHandler implements LocationListener {
+
+		@Override
+		public void onLocationChanged(Location loc) {
         	Double lat = loc.getLatitude()*1E6;
         	Double lng = loc.getLongitude()*1E6;
-        	Point point = new Point(lat.intValue(), lng.intValue());
-        	mapController.centerMapTo(point, false);
+        	GeoPoint point = new GeoPoint(lat.intValue(), lng.intValue());
+        	mapController.setCenter(point);
         	
             setContentView(mapView);
-    	}
+		}
+
+		@Override
+		public void onProviderDisabled(String provider) {}
+
+		@Override
+		public void onProviderEnabled(String provider) {}
+
+		@Override
+		public void onStatusChanged(String provider, int status, 
+				Bundle extras) {}
     }
+
+	@Override
+	protected boolean isRouteDisplayed() {
+		return false;
+	}
 }
