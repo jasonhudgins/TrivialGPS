@@ -4,6 +4,7 @@ import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.location.LocationProvider;
 import android.os.Bundle;
 
 import com.google.android.maps.GeoPoint;
@@ -42,7 +43,13 @@ public class TrivialGPS extends MapActivity {
 	   locationManager =
 	     (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-	   locationManager.requestLocationUpdates("gps", 0, 0, 
+	   // some hacks to get the mock provider working
+	   locationManager.setTestProviderEnabled(LocationManager.GPS_PROVIDER,
+			   true);
+	   locationManager.setTestProviderStatus(LocationManager.GPS_PROVIDER,
+	   LocationProvider.AVAILABLE, null, System.currentTimeMillis()); 
+	   
+	   locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, 
 			   new LocationUpdateHandler());
 	}
         
