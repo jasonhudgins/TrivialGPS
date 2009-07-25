@@ -21,8 +21,7 @@ import com.google.android.maps.MapView;
 */
 public class TrivialGPS extends MapActivity {
 	
-	public static final String UPDATE_LOC = "com.test.TrivialGPS.LOC_UPDATE";
-	private static final String MAP_API_KEY = "foo";
+	private static final String MAP_API_KEY = "YOUR_API_KEY_GOES_HERE";
 	
 	private MapController mapController;
 	private MapView mapView;
@@ -43,16 +42,10 @@ public class TrivialGPS extends MapActivity {
 	   locationManager =
 	     (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-	   // some hacks to get the mock provider working
-	   locationManager.setTestProviderEnabled(LocationManager.GPS_PROVIDER,
-			   true);
-	   locationManager.setTestProviderStatus(LocationManager.GPS_PROVIDER,
-	   LocationProvider.AVAILABLE, null, System.currentTimeMillis()); 
-	   
-	   locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, 
-			   new LocationUpdateHandler());
+	   locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 
+			   0, new LocationUpdateHandler());
 	}
-        
+        	
     // this inner class is the intent reciever that recives notifcations
     // from the location provider about position updates, and then redraws
     // the MapView with the new location centered.
