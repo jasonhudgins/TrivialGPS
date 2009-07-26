@@ -4,7 +4,6 @@ import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.os.Bundle;
 
 import com.google.android.maps.GeoPoint;
@@ -53,11 +52,10 @@ public class TrivialGPS extends MapActivity {
 
 		@Override
 		public void onLocationChanged(Location loc) {
-        	Double lat = loc.getLatitude()*1E6;
-        	Double lng = loc.getLongitude()*1E6;
-        	GeoPoint point = new GeoPoint(lat.intValue(), lng.intValue());
+        	int lat = (int) (loc.getLatitude()*1E6);
+        	int lng = (int) (loc.getLongitude()*1E6);
+        	GeoPoint point = new GeoPoint(lat, lng);
         	mapController.setCenter(point);
-        	
             setContentView(mapView);
 		}
 
